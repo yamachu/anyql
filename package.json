@@ -1,0 +1,14 @@
+{
+  "name": "anyql-workspace",
+  "private": true,
+  "scripts": {
+    "test:js": "pnpm --filter ./packages/anyql-js run test",
+    "test:examples": "pnpm --filter ./examples/oxlint-plugin run test",
+    "test": "pnpm run test:js && pnpm run test:examples"
+  },
+  "packageManager": "pnpm@10.30.1",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  }
+}

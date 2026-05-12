@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!-- .NET 11+ can emit TypeScript definitions for JSExport/JSImport -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <WasmEmitTypeScriptDefinitions>true</WasmEmitTypeScriptDefinitions>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <CompressionEnabled>false</CompressionEnabled>
+    <PublishTrimmed>true</PublishTrimmed>
+    <RunAOTCompilation>true</RunAOTCompilation>
+    <WasmStripILAfterAOT>true</WasmStripILAfterAOT>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AnyQL.Core\AnyQL.Core.csproj" />
+    <ProjectReference Include="..\AnyQL.Postgres\AnyQL.Postgres.csproj" />
+    <ProjectReference Include="..\AnyQL.MySql\AnyQL.MySql.csproj" />
+  </ItemGroup>
+
+</Project>

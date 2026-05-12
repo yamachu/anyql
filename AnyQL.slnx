@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AnyQL.Core/AnyQL.Core.csproj" />
+    <Project Path="src/AnyQL.MySql/AnyQL.MySql.csproj" />
+    <Project Path="src/AnyQL.Postgres/AnyQL.Postgres.csproj" />
+    <Project Path="src/AnyQL.Wasm/AnyQL.Wasm.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AnyQL.Tests/AnyQL.Tests.csproj" />
+  </Folder>
+</Solution>

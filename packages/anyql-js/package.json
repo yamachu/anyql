@@ -1,0 +1,51 @@
+{
+  "name": "@yamachu/anyql",
+  "version": "0.1.0",
+  "description": "Analyze SQL queries against live PostgreSQL/MySQL and return column/parameter type metadata",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./oxlint-plugin": {
+      "import": "./dist/oxlint-plugin/index.js",
+      "types": "./dist/oxlint-plugin/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build:ts": "vite build",
+    "build": "pnpm run typecheck && pnpm run build:ts",
+    "typecheck": "tsc --noEmit --project tsconfig.typecheck.json",
+    "test": "sh scripts/test.sh"
+  },
+  "packageManager": "pnpm@10.30.1",
+  "files": [
+    "dist/"
+  ],
+  "keywords": [
+    "sql",
+    "typescript",
+    "type-safety",
+    "postgresql",
+    "mysql",
+    "wasm"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@testcontainers/postgresql": "11.14.0",
+    "@types/estree": "1.0.9",
+    "@types/node": "22.19.18",
+    "@yamachu/vite-plugin-dotnet-wasm": "0.4.0",
+    "typescript": "6.0.3",
+    "vite": "8.0.11",
+    "vite-plugin-dts": "5.0.0",
+    "vitest": "4.1.5"
+  },
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  }
+}
