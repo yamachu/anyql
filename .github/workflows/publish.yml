@@ -1,0 +1,84 @@
+name: Publish to npm
+run-name: "Publish @yamachu/anyql v${{ github.event.inputs.version }}, dry-run: ${{ github.event.inputs.dry-run }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'バージョン番号（例: 1.2.3）またはバンプ種別（patch / minor / major）'
+        required: true
+        type: string
+      dry-run:
+        description: 'Dry run（ビルド・pack のみ、publish・タグ push しない）'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write  # version commit + tag の push
+  id-token: write  # npm provenance (OIDC)
+
+jobs:
+  publish:
+    name: Build & Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install WASM workloads
+        run: dotnet workload install wasm-tools wasm-experimental
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@91ab88e2619ed1f46221f0ba42d1492c02baf788 # v6.0.6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false  # never use caching in release builds
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Bump version in package.json
+        id: version
+        working-directory: packages/anyql-js
+        run: |
+          INPUT="${{ inputs.version }}"
+          npm version "$INPUT" --no-git-tag-version
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "version=${NEW_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=v${NEW_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        working-directory: packages/anyql-js
+        run: pnpm run build
+
+      - name: Pack (dry-run confirmation)
+        if: inputs.dry-run
+        working-directory: packages/anyql-js
+        run: pnpm pack --dry-run
+
+      - name: Commit & push version bump + tag
+        if: ${{ !inputs.dry-run }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add packages/anyql-js/package.json
+          git commit -m "chore: release @yamachu/anyql v${{ steps.version.outputs.version }}"
+          git tag "${{ steps.version.outputs.tag }}"
+          git push origin HEAD --tags
+
+      - name: Publish to npm
+        if: ${{ !inputs.dry-run }}
+        working-directory: packages/anyql-js
+        run: pnpm publish --no-git-checks --access public
