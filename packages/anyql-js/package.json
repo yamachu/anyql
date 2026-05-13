@@ -1,6 +1,6 @@
 {
   "name": "@yamachu/anyql",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Analyze SQL queries against live PostgreSQL/MySQL and return column/parameter type metadata",
   "type": "module",
   "main": "./dist/index.js",
