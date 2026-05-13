@@ -81,4 +81,4 @@ jobs:
       - name: Publish to npm
         if: ${{ !inputs.dry-run }}
         working-directory: packages/anyql-js
-        run: pnpm publish --no-git-checks --access public
+        run: npm publish --no-git-checks --access public
